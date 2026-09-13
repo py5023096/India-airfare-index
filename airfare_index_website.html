@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bharat Airfare Index</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#0E1526;
+    --panel:#16203A;
+    --panel-2:#0F1830;
+    --border:#22304F;
+    --text:#EAF0FA;
+    --muted:#8B97B5;
+    --gold:#E3A73A;
+    --teal:#4FB7A6;
+    --red:#E2596B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Space Grotesk', sans-serif;
+    line-height:1.5;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1100px; margin:0 auto; padding:0 32px;}
+
+  /* NAV */
+  nav{
+    position:sticky; top:0; z-index:20;
+    background:rgba(14,21,38,0.88); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:66px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:600; font-size:16px;}
+  .brand-mark{width:10px; height:10px; border-radius:2px; background:var(--gold);}
+  .navlinks{display:flex; gap:28px; font-size:14px; color:var(--muted);}
+  .navlinks a:hover{color:var(--text);}
+  .navcta{
+    background:var(--gold); color:#171200; font-weight:600; font-size:13.5px;
+    padding:9px 18px; border-radius:6px;
+  }
+  .navcta:hover{filter:brightness(1.08);}
+
+  /* HERO */
+  header.hero{padding:96px 0 80px; border-bottom:1px solid var(--border);}
+  .hero-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center;}
+  .hero h1{
+    font-size:44px; font-weight:700; letter-spacing:-0.5px; line-height:1.12;
+    max-width:560px;
+  }
+  .hero h1 .accent{color:var(--gold);}
+  .hero p.lead{color:var(--muted); font-size:16px; max-width:480px; margin-top:18px;}
+  .hero-ctas{display:flex; gap:14px; margin-top:32px;}
+  .btn-primary{
+    background:var(--gold); color:#171200; font-weight:600; font-size:14.5px;
+    padding:13px 24px; border-radius:7px;
+  }
+  .btn-secondary{
+    border:1px solid var(--border); color:var(--text); font-weight:500; font-size:14.5px;
+    padding:12px 22px; border-radius:7px;
+  }
+  .btn-secondary:hover{border-color:#3A4A75;}
+
+  .index-card{
+    background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:26px;
+  }
+  .index-card .label{color:var(--muted); font-size:13px;}
+  .index-value{font-family:'IBM Plex Mono', monospace; font-size:52px; font-weight:600; color:var(--gold); margin-top:6px;}
+  .index-delta{font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--red); margin-top:4px;}
+  .sparkline{margin-top:18px;}
+  .index-foot{display:flex; justify-content:space-between; color:var(--muted); font-size:12px; margin-top:14px; font-family:'IBM Plex Mono', monospace;}
+
+  /* SECTION GENERIC */
+  section{padding:80px 0; border-bottom:1px solid var(--border);}
+  .section-head{max-width:600px; margin-bottom:44px;}
+  .section-head .kicker{color:var(--teal); font-size:13px; font-weight:500; margin-bottom:10px;}
+  .section-head h2{font-size:30px; font-weight:700; letter-spacing:-0.3px;}
+  .section-head p{color:var(--muted); font-size:15px; margin-top:12px;}
+
+  /* PROBLEM STATS */
+  .stat-row{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .stat{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:24px;}
+  .stat .num{font-family:'IBM Plex Mono', monospace; font-size:30px; font-weight:600; color:var(--gold);}
+  .stat .desc{color:var(--muted); font-size:13.5px; margin-top:8px;}
+
+  /* PIPELINE */
+  .pipeline{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  .step{border:1px solid var(--border); border-radius:12px; padding:22px; background:var(--panel-2);}
+  .step .n{font-family:'IBM Plex Mono', monospace; color:var(--muted); font-size:13px;}
+  .step h3{font-size:16.5px; margin-top:10px; font-weight:600;}
+  .step p{color:var(--muted); font-size:13.5px; margin-top:8px;}
+
+  /* LIVE PREVIEW MOCKUP */
+  .preview-panel{
+    background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:24px;
+  }
+  .preview-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+  .preview-top .t{font-size:14px; color:var(--muted);}
+  .route-mini-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:20px;}
+  .route-mini{background:var(--panel-2); border:1px solid var(--border); border-radius:8px; padding:12px;}
+  .route-mini .r{font-size:12.5px; color:var(--muted);}
+  .route-mini .f{font-family:'IBM Plex Mono', monospace; font-size:16px; margin-top:6px;}
+  .route-mini .c{font-family:'IBM Plex Mono', monospace; font-size:11.5px; margin-top:2px;}
+
+  /* SOURCES */
+  .source-row{display:flex; flex-wrap:wrap; gap:12px;}
+  .chip{
+    border:1px solid var(--border); color:var(--muted); font-size:13px;
+    padding:9px 16px; border-radius:999px; font-family:'IBM Plex Mono', monospace;
+  }
+
+  footer{padding:48px 0; color:var(--muted); font-size:13px;}
+  footer .foot-row{display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px;}
+
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr;}
+    .stat-row, .pipeline, .route-mini-grid{grid-template-columns:repeat(2,1fr);}
+    .hero h1{font-size:34px;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="brand-mark"></span>Bharat Airfare Index</div>
+    <div class="navlinks">
+      <a href="#problem">Why it matters</a>
+      <a href="#pipeline">How it works</a>
+      <a href="#preview">Live index</a>
+      <a href="#sources">Data sources</a>
+    </div>
+    <a class="navcta" href="#preview">View dashboard</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>A real-time read on what Indians actually <span class="accent">pay to fly.</span></h1>
+      <p class="lead">Automated scraping of airline and OTA fares, turned into a continuously updated price index — built to sharpen the transport component of India's Consumer Price Index.</p>
+      <div class="hero-ctas">
+        <a class="btn-primary" href="#preview">See the live index</a>
+        <a class="btn-secondary" href="#pipeline">How it's built</a>
+      </div>
+    </div>
+    <div class="index-card">
+      <div class="label">Weighted index &middot; base 100</div>
+      <div class="index-value mono" id="heroIndex">104.32</div>
+      <div class="index-delta mono" id="heroDelta">&#9650; 4.32 pts this week</div>
+      <svg class="sparkline" width="100%" height="60" viewBox="0 0 300 60" preserveAspectRatio="none">
+        <polyline fill="none" stroke="#E3A73A" stroke-width="2.5"
+          points="0,40 25,38 50,44 75,30 100,34 125,20 150,26 175,15 200,22 225,12 250,18 275,8 300,14" />
+      </svg>
+      <div class="index-foot">
+        <span>8 routes tracked</span>
+        <span>Updated every 30 minutes</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="problem">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">The problem</div>
+      <h2>Airfares move faster than the surveys that measure them.</h2>
+      <p>Dynamic pricing means the same route can cost 40% more within a day. Periodic manual collection for CPI can't keep pace with that volatility — so the transport sub-index lags reality.</p>
+    </div>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="num">40%+</div>
+        <div class="desc">Typical intra-day fare swing on high-demand routes during peak season</div>
+      </div>
+      <div class="stat">
+        <div class="num">8</div>
+        <div class="desc">Major domestic routes in the initial traffic-weighted basket</div>
+      </div>
+      <div class="stat">
+        <div class="num">30 min</div>
+        <div class="desc">Target refresh interval for the automated collection cycle</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pipeline">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">How it works</div>
+      <h2>From a fare on a screen to a published index point.</h2>
+      <p>Four stages, running continuously across every route in the basket.</p>
+    </div>
+    <div class="pipeline">
+      <div class="step">
+        <div class="n">01</div>
+        <h3>Collect</h3>
+        <p>Fares pulled from airline and OTA sites via APIs where available, headless-browser scraping otherwise.</p>
+      </div>
+      <div class="step">
+        <div class="n">02</div>
+        <h3>Clean</h3>
+        <p>Duplicate listings and glitch fares removed; base fare separated from taxes and surcharges.</p>
+      </div>
+      <div class="step">
+        <div class="n">03</div>
+        <h3>Weight</h3>
+        <p>Route-level fares combined using DGCA passenger-traffic shares, adjusted for seasonality.</p>
+      </div>
+      <div class="step">
+        <div class="n">04</div>
+        <h3>Publish</h3>
+        <p>Index value and route breakdown pushed to the dashboard and made available to CPI systems.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="preview">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Live index</div>
+      <h2>What the dashboard shows.</h2>
+      <p>A working preview of the route basket the index is built from.</p>
+    </div>
+    <div class="preview-panel">
+      <div class="preview-top">
+        <span class="t">Route-wise fares &middot; last scrape cycle</span>
+        <span class="t mono" id="clock">--:--:--</span>
+      </div>
+      <svg width="100%" height="140" viewBox="0 0 1000 140" preserveAspectRatio="none">
+        <polyline fill="none" stroke="#22304F" stroke-width="1" points="0,100 1000,100" />
+        <polyline fill="none" stroke="#E3A73A" stroke-width="2.5"
+          points="0,90 90,84 180,95 270,70 360,78 450,50 540,60 630,35 720,48 810,25 900,40 1000,20" />
+      </svg>
+      <div class="route-mini-grid">
+        <div class="route-mini"><div class="r">Delhi &rarr; Mumbai</div><div class="f mono">&#8377;5,820</div><div class="c mono" style="color:#E2596B">+5.8%</div></div>
+        <div class="route-mini"><div class="r">Mumbai &rarr; Bengaluru</div><div class="f mono">&#8377;4,650</div><div class="c mono" style="color:#4FB7A6">-3.1%</div></div>
+        <div class="route-mini"><div class="r">Delhi &rarr; Bengaluru</div><div class="f mono">&#8377;6,910</div><div class="c mono" style="color:#E2596B">+11.4%</div></div>
+        <div class="route-mini"><div class="r">Delhi &rarr; Kolkata</div><div class="f mono">&#8377;5,540</div><div class="c mono" style="color:#4FB7A6">-4.5%</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sources" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Data sources</div>
+      <h2>Pulling from carriers and aggregators directly.</h2>
+    </div>
+    <div class="source-row">
+      <span class="chip">IndiGo</span>
+      <span class="chip">Air India</span>
+      <span class="chip">SpiceJet</span>
+      <span class="chip">Akasa Air</span>
+      <span class="chip">MakeMyTrip</span>
+      <span class="chip">Cleartrip</span>
+      <span class="chip">Yatra</span>
+      <span class="chip">Goibibo</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <div>Bharat Airfare Index &mdash; SIH 2026 prototype, built for MoSPI's CPI augmentation track.</div>
+    <div class="mono">v0.1 &middot; concept design</div>
+  </div>
+</footer>
+
+<script>
+  function tick(){
+    document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-IN',{hour12:false});
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // gentle hero index drift so the page feels alive
+  let val = 104.32;
+  setInterval(()=>{
+    val += (Math.random()-0.5)*0.15;
+    document.getElementById('heroIndex').textContent = val.toFixed(2);
+    const delta = val - 100;
+    const el = document.getElementById('heroDelta');
+    el.innerHTML = (delta>=0?'&#9650; ':'&#9660; ') + Math.abs(delta).toFixed(2) + ' pts this week';
+    el.style.color = delta>=0 ? '#E2596B' : '#4FB7A6';
+  }, 1000);
+</script>
+
+</body>
+</html>
